@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data:/data/db
+
+
+  ## Eureka Server
+  service-discovery:
+    image: shavitc/ms_service_discovery:latest
+    container_name: service-discovery
+    pull_policy: always
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    image: shavitc/ms_api_gateway:latest
+    container_name: api-gateway
+    pull_policy: always
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+    depends_on:
+      - service-discovery
+
+  ms-news:
+    container_name: ms-news
+    image: shavitc/ms-news:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/newsdb
+      - NEWSAPI_KEY=${NEWSAPI_KEY}
+    depends_on:
+      - mongo
+      - service-discovery
+      - api-gateway
+
+  ms-covid:
+    container_name: ms-covid
+    image: shavitc/ms-covid:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/coviddb
+      - RAPIDAPI_KEY=${RAPIDAPI_KEY}
+    depends_on:
+      - mongo
+      - service-discovery
+      - api-gateway
+
+

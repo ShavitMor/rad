@@ -1,0 +1,25 @@
+# Stage 1: Builder Stage
+FROM eclipse-temurin:17.0.4.1_1-jre as builder
+WORKDIR extracted
+
+# Add the JAR to the image
+ADD target/*.jar app.jar
+
+# Use Spring Boot's layertools to extract layers
+RUN java -Djarmode=layertools -jar app.jar extract
+
+# Stage 2: Runtime Stage
+FROM eclipse-temurin:17.0.4.1_1-jre
+WORKDIR application
+
+# Copy the extracted layers from the builder stage
+COPY --from=builder extracted/dependencies/ ./
+COPY --from=builder extracted/spring-boot-loader/ ./
+COPY --from=builder extracted/snapshot-dependencies/ ./
+COPY --from=builder extracted/application/ ./
+
+# Expose port 8761
+EXPOSE 8761
+
+# Set the entry point to the Spring Boot loader
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
