@@ -1,11 +1,11 @@
-import axios from 'axios';
+import api from './api';
 import { Organization } from '../components/Organization/Organization';
 
-const API_URL = 'http://localhost:8080/organizations';
+const API_URL = "/organizations";
 
 export const fetchOrganizations = async (): Promise<Organization[]> => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await api.get(API_URL);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -15,7 +15,7 @@ export const fetchOrganizations = async (): Promise<Organization[]> => {
 
 export const fetchOrganizationById = async (id: string): Promise<Organization> => {
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
+        const response = await api.get(`${API_URL}/${id}`);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -25,7 +25,7 @@ export const fetchOrganizationById = async (id: string): Promise<Organization> =
 
 export const createOrganization = async (organization: Omit<Organization, 'id'>): Promise<Organization> => {
     try {
-        const response = await axios.post(API_URL, organization);
+        const response = await api.post(API_URL, organization);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -35,7 +35,7 @@ export const createOrganization = async (organization: Omit<Organization, 'id'>)
 
 export const updateOrganization = async (id: string, organization: Omit<Organization, 'id'>): Promise<Organization> => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, organization);
+        const response = await api.put(`${API_URL}/${id}`, organization);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -45,7 +45,7 @@ export const updateOrganization = async (id: string, organization: Omit<Organiza
 
 export const deleteOrganization = async (id: string): Promise<void> => {
     try {
-        await axios.delete(`${API_URL}/${id}`);
+        await api.delete(`${API_URL}/${id}`);
     } catch (error: any) {
         alert(error.response.data);
         throw error;

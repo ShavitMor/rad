@@ -1,11 +1,11 @@
-import axios from "axios";
-import { User } from "../components/User/User";
+import api from './api';
+import { User } from '../components/User/User';
 
-const BASE_URL = "http://localhost:8080/users";
+const BASE_URL = "/users";
 
 export const createUser = async (user: Partial<User>): Promise<User> => {
     try {
-        const response = await axios.post(BASE_URL, user);
+        const response = await api.post(BASE_URL, user);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -15,7 +15,7 @@ export const createUser = async (user: Partial<User>): Promise<User> => {
 
 export const fetchUsers = async (): Promise<User[]> => {
     try {
-        const response = await axios.get(BASE_URL);
+        const response = await api.get(BASE_URL);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -25,7 +25,7 @@ export const fetchUsers = async (): Promise<User[]> => {
 
 export const fetchUserById = async (id: string): Promise<User> => {
     try {
-        const response = await axios.get(`${BASE_URL}/${id}`);
+        const response = await api.get(`${BASE_URL}/${id}`);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -35,7 +35,7 @@ export const fetchUserById = async (id: string): Promise<User> => {
 
 export const updateUser = async (id: string, user: Partial<User>): Promise<User> => {
     try {
-        const response = await axios.put(`${BASE_URL}/${id}`, user);
+        const response = await api.put(`${BASE_URL}/${id}`, user);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -45,7 +45,7 @@ export const updateUser = async (id: string, user: Partial<User>): Promise<User>
 
 export const deleteUser = async (id: string): Promise<void> => {
     try {
-        await axios.delete(`${BASE_URL}/${id}`);
+        await api.delete(`${BASE_URL}/${id}`);
     } catch (error: any) {
         alert(error.response.data);
         throw error;

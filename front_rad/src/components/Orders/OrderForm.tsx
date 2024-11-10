@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/FormStyle.css'; // Import CSS for styles
+import {jwtDecode} from 'jwt-decode';
+import '../../styles/FormStyle.css';
 import { createOrder } from '../../api/orderService';
-import { fetchUsers } from '../../api/userService';
-import { User } from '../../components/User/User'; // Import the User interface
 import { fetchProducts } from '../../api/productsService';
 import { Product } from '../../components/Products/Product'; // Import the Product interface
 
@@ -12,49 +11,48 @@ interface OrderFormProps {
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
-    const [userId, setUserId] = useState(order ? order.userId : '');
+    const [username, setUsername] = useState<string | null>(null);
     const [products, setProducts] = useState(order ? order.products : [{ productId: '', quantityKg: 0 }]);
-    const [error, setError] = useState<string | null>(null); // State for error handling
-    const [fetchedUsers, setFetchedUsers] = useState<User[]>([]); // Use the User interface
-    const [fetchedProducts, setFetchedProducts] = useState<Product[]>([]); // Use the Product interface
+    const [error, setError] = useState<string | null>(null);
+    const [fetchedProducts, setFetchedProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        const getUsers = async () => {
-            try {
-                const usersData = await fetchUsers();
-                setFetchedUsers(usersData);
-            } catch (err) {
-                console.error("Failed to fetch users", err);
-            }
-        };
+        // Check if token exists and decode the username
+        const token = localStorage.getItem('token');
+        console.log("Token:", token);
+        if (token) {
+            const decodedToken: any = jwtDecode(token); // Decode JWT
+            console.log("Decoded Token:", decodedToken);
+            setUsername(decodedToken?.sub || null); // Set username if present
+        }
 
+        // Fetch products for selection
         const getProducts = async () => {
             try {
                 const productsData = await fetchProducts();
                 setFetchedProducts(productsData);
-            } catch (err) { // Handle errors
+            } catch (err) {
                 console.error("Failed to fetch products", err);
             }
         };
 
-        getUsers();
         getProducts();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
 
         const orderData = {
-            userId,
+            userId: username || 'defaultUserId', // Use the username from token or a default value
             products,
         };
 
         try {
-            await createOrder(orderData); // Create a new order
-            onSave(); // Call the onSave function to refresh the order list or perform necessary updates
+            await createOrder(orderData);
+            onSave();
         } catch (err) {
-            setError("Failed to save the order. Please try again."); // Set error message on failure
-            console.error(err); // Log error for debugging
+            setError("Failed to save the order. Please try again.");
+            console.error(err);
         }
     };
 
@@ -72,16 +70,15 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
         <div className="form-container">
             <h2 className="form-title">{order ? 'Update Order' : 'Create Order'}</h2>
             <form className="form" onSubmit={handleSubmit}>
-                {error && <p className="error-message">{error}</p>} {/* Display error message */}
+                {error && <p className="error-message">{error}</p>}
+                
                 <label>User</label>
-                <select value={userId} onChange={(e) => setUserId(e.target.value)} className="form-input" required>
-                    <option value="" disabled>Select User</option>
-                    {fetchedUsers.map(user => (
-                        <option key={user.id} value={user.id}>
-                            {user.username} {/* Assuming username is used for display */}
-                        </option>
-                    ))}
-                </select>
+                <input 
+                    type="text" 
+                    value={username || 'Not logged in'} 
+                    className="form-input" 
+                    readOnly 
+                />
 
                 <h3>Products</h3>
                 {products.map((product, index) => (
@@ -114,7 +111,13 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
                 ))}
 
                 <button type="button" onClick={addProduct} className="add-product-button">Add Product</button>
-                <button type="submit" className="submit-button">Submit</button>
+                <button 
+                    type="submit" 
+                    className="submit-button" 
+                    disabled={!username} // Disable if no username
+                >
+                    Submit
+                </button>
             </form>
         </div>
     );

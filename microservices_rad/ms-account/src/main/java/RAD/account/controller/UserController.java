@@ -4,6 +4,7 @@ import RAD.account.dto.CreateUserRequest;
 import RAD.account.model.User;
 import RAD.account.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -21,11 +22,16 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
         logger.info("Creating new user with username: {}", createUserRequest.getUsername());
+        if (userService.emailExists(createUserRequest.getEmail())) {
+            logger.warn("Email already exists: {}", createUserRequest.getEmail());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
 
         User user = userService.createUser(createUserRequest.getOrganizationId(), createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
         logger.info("User created successfully with ID: {}", user.getId());
 
         return ResponseEntity.ok(user);
+
     }
 
     @GetMapping

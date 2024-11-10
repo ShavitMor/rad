@@ -13,8 +13,4 @@ public class CovidGlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidOrganizationInputException.class)
-    public ResponseEntity<String> handleInvalidOrganizationInputException(InvalidOrganizationInputException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
 }

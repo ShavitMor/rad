@@ -17,6 +17,7 @@ const OrderList: React.FC = () => {
         const getOrders = async () => {
             try {
                 const data = await fetchOrders();
+                console.log(data)
                 setOrders(data);
             } catch (error) {
                 console.error('Error fetching orders:', error);
@@ -83,7 +84,7 @@ const OrderList: React.FC = () => {
                 {Array.isArray(orders) && orders.map((order) => (
                     <li key={order.id} className="order-item">
                         <h3 onClick={() => order.id && toggleOrderDetails(order.id)} className="order-title">Order ID: {order.id}</h3>
-                        <p className="order-user">User ID: {order.userId}</p>
+                        <p className="order-user">User Name: {order.userId}</p>
 
                         {selectedOrderId === order.id && editingOrderId !== order.id && (
                             <div>
