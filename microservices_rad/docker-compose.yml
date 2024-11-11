@@ -59,4 +59,28 @@ services:
       - service-discovery
       - api-gateway
 
+  ms-account:
+    container_name: ms-account
+    image: shavitc/ms-account:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/accountdb
+    depends_on:
+        - mongo
+        - service-discovery
+        - api-gateway
+
+  ms-store:
+    container_name: ms-store
+    image: shavitc/ms-store:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/storedb
+    depends_on:
+        - mongo
+        - service-discovery
+        - api-gateway
+
 
