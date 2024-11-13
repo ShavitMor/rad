@@ -1,16 +1,23 @@
 package RAD.account.model;
 
+
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.GenericGenerator;
+
+import jakarta.persistence.*;
+
 
 @Data
-@Document(collection = "organizations")
+@Entity
+@Table(name = "organizations")
 public class Organization {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String address;
-
-
 }
+
+
+
+

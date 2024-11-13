@@ -23,6 +23,7 @@ export const login = async (credentials: loginCredentials) => {
         const response = await api.post('/auth/login', credentials);
         // Save token in localStorage
         localStorage.setItem('token', response.data.jwt);
+        localStorage.setItem("organizationId", response.data.organizationId);
 
         return response.data.jwt;
     } catch (error: any) {
@@ -45,6 +46,7 @@ export const register = async (credentials: registerCredentials): Promise<AuthRe
 export const logout = (): void => {
     // Remove token from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('organizationId');
 };
 
 export const isAuthenticated = (): boolean => {
