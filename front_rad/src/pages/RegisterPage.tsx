@@ -5,11 +5,11 @@ const RegisterPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [organizationId, setOrganizationId] = useState('');
+    const [organizationname, setOrganizationname] = useState('');
 
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
-        register({ organizationId, username, email, password });
+        register({ organizationname: organizationname, username, email, password });
         
         console.log("Registered with:", { username, email, password });
     };
@@ -38,9 +38,9 @@ const RegisterPage: React.FC = () => {
                 />
                 <input
                     type="text"
-                    placeholder="Organization Id"
-                    value={organizationId}
-                    onChange={(e) => setOrganizationId(e.target.value)}
+                    placeholder="Organization Name"
+                    value={organizationname}
+                    onChange={(e) => setOrganizationname(e.target.value)}
                 />
                 <button type="submit">Register</button>
             </form>

@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable String id) {
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         logger.info("Retrieving product with ID: {}", id);
         return productService.getProductById(id)
                 .map(product -> {
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody Product productDetails) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         logger.info("Updating product with ID: {}", id);
         Product updatedProduct = productService.updateProduct(id, productDetails);
         logger.info("Product updated successfully with ID: {}", id);
@@ -57,7 +57,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         logger.info("Deleting product with ID: {}", id);
         productService.deleteProduct(id);
         logger.info("Product deleted successfully with ID: {}", id);

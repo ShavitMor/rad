@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Organization } from './Organization';
 import {createOrganization} from '../../api/organizationService'; // Adjust the path as needed
+import { createSchemas } from '../../api/orderService';
 
 interface OrganizationFormProps {
     onSubmit: (organization: Omit<Organization, 'id'>) => Promise<void>; // Ensure it returns a Promise
@@ -36,7 +37,7 @@ const OrganizationForm: React.FC<OrganizationFormProps> = ({ initialData, onCanc
         try {
           
             await createOrganization(formData);
-            
+            await createSchemas(formData.name);
 
             if (onSave) {
                 onSave(); // Call onSave to refresh the organization list

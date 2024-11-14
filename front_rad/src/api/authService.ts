@@ -9,10 +9,11 @@ interface AuthResponse {
 interface loginCredentials {
     username: string;
     password: string;
+    organizationname: string;
 }
 
 interface registerCredentials {
-    organizationId: string;
+    organizationname: string;
     username: string;
     email: string;
     password: string;
@@ -20,11 +21,16 @@ interface registerCredentials {
 
 export const login = async (credentials: loginCredentials) => {
     try {
-        const response = await api.post('/auth/login', credentials);
+        console.log(credentials.organizationname);
+        
+        const response = await api.post('/auth/login', credentials, {
+            headers: {
+                'X-PrivateTenant': credentials.organizationname
+            }
+        });
         // Save token in localStorage
         localStorage.setItem('token', response.data.jwt);
-        localStorage.setItem("organizationId", response.data.organizationId);
-
+        localStorage.setItem("organizationname", response.data.user.organizationname);
         return response.data.jwt;
     } catch (error: any) {
         alert(error.response?.data || "An error occurred during login.");
@@ -34,7 +40,11 @@ export const login = async (credentials: loginCredentials) => {
 
 export const register = async (credentials: registerCredentials): Promise<AuthResponse> => {
     try {
-        const response = await api.post<AuthResponse>('/auth/register', credentials);
+        const response = await api.post<AuthResponse>('/auth/register', credentials, {
+            headers: {
+                'X-PrivateTenant': credentials.organizationname
+            }
+        });
      
         return response.data;
     } catch (error: any) {
@@ -45,8 +55,9 @@ export const register = async (credentials: registerCredentials): Promise<AuthRe
 
 export const logout = (): void => {
     // Remove token from localStorage
+        localStorage.removeItem('organizationname');
     localStorage.removeItem('token');
-    localStorage.removeItem('organizationId');
+    localStorage.removeItem('organizationname');
 };
 
 export const isAuthenticated = (): boolean => {

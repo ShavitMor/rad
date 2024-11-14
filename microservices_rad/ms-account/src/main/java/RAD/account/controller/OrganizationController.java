@@ -19,6 +19,8 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
+
+
     @PostMapping
     public Organization createOrganization(@RequestBody Organization organization) {
         logger.info("Creating new organization: {}", organization.getName());

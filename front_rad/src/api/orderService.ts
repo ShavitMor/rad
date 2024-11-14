@@ -41,3 +41,13 @@ export const createOrder = async (order: Order): Promise<Order> => {
         throw error;
     }
 };
+
+export const createSchemas = async (organization: string): Promise<any> => {
+try {
+    const response = await api.post(`${API_URL}/${organization}}`);
+    return response.data;
+} catch (error: any) {
+    alert(error.response.data);
+    throw error;
+}
+}

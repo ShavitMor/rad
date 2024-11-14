@@ -94,36 +94,13 @@ public class OrganizationService {
                 username VARCHAR(50) NOT NULL,
                 email VARCHAR(100) NOT NULL,
                 password VARCHAR(100) NOT NULL,
-                organizationid BIGINT
+                organizationname VARCHAR(100)
             )
         """, schemaName);
         jdbcTemplate.execute(createUsersTableSQL);
         log.info("Created users table in schema: {}", schemaName);
 
-        // SQL for orders table creation
-        String createOrdersTableSQL = String.format("""
-            CREATE TABLE %s.orders (
-                id VARCHAR(36) PRIMARY KEY,
-                user_id VARCHAR(36) NOT NULL,
-                total_price DOUBLE PRECISION NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """, schemaName);
-        jdbcTemplate.execute(createOrdersTableSQL);
-        log.info("Created orders table in schema: {}", schemaName);
 
-//        // SQL for order_products table creation (to handle the products in each order)
-//        String createOrderProductsTableSQL = String.format("""
-//            CREATE TABLE %s.order_products (
-//                order_id VARCHAR(36) NOT NULL,
-//                product_id VARCHAR(36) NOT NULL,
-//                quantity DOUBLE PRECISION NOT NULL,
-//                PRIMARY KEY (order_id, product_id),
-//                FOREIGN KEY (order_id) REFERENCES %s.orders(id)
-//            )
-//        """, schemaName, schemaName);
-        //jdbcTemplate.execute(createOrderProductsTableSQL);
-     //   log.info("Created order_products table in schema: {}", schemaName);
     }
 
     private String sanitizeSchemaName(String organizationName) {

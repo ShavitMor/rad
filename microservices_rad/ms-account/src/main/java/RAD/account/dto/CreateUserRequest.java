@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CreateUserRequest {
-    private String organizationName;
+    private String organizationname;
     private String username;
     private String email;
     private String password;

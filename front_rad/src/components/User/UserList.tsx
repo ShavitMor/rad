@@ -9,7 +9,7 @@ const UserList: React.FC = () => {
     const [editingUserId, setEditingUserId] = useState<string | null>(null);
     const [editFormData, setEditFormData] = useState<User>({
         id: "",
-        organizationId:"",
+        organizationName:"",
         username: "",
         email: "",
         password: "",
@@ -60,7 +60,7 @@ const UserList: React.FC = () => {
             const updatedUser = await updateUser(id, editFormData);
             setUsers(users.map(user => user.id === id ? updatedUser : user));
             setEditingUserId(null);
-            setEditFormData({ id: "",  organizationId:"", username: "", email: "", password: "" });
+            setEditFormData({ id: "",  organizationName:"", username: "", email: "", password: "" });
         } catch (error) {
             console.error('Error updating user:', error);
         }
@@ -68,7 +68,7 @@ const UserList: React.FC = () => {
 
     const handleCancelEdit = () => {
         setEditingUserId(null);
-        setEditFormData({ id: "",  organizationId:"", username: "", email: "", password: "" });
+        setEditFormData({ id: "",  organizationName:"", username: "", email: "", password: "" });
     };
 
     return (
@@ -85,7 +85,7 @@ const UserList: React.FC = () => {
                             <div>
                                 <p><strong>Id:</strong> {user.id}</p>
                                 <p><strong>Email:</strong> {user.email}</p>
-                                <p><strong>Organization ID:</strong> {user.organizationId}</p>
+                                <p><strong>Organization Name:</strong> {user.organizationName}</p>
                                 <p><strong>Password:</strong> {user.password}</p>
                                 <div>
                                     <button onClick={() => handleEdit(user)}>

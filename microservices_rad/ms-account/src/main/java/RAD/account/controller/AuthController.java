@@ -47,7 +47,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
-        userService.createUser(request.getOrganizationName(), request.getUsername(), request.getEmail(), request.getPassword());
+        userService.createUser(request.getOrganizationname(), request.getUsername(), request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
 
     }

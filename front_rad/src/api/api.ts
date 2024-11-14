@@ -20,9 +20,9 @@ api.interceptors.request.use(
 
 // Add an interceptor to include the X-PrivateTenant header
 api.interceptors.request.use((config) => {
-    const organizationId = localStorage.getItem('organizationId');
-    if (organizationId) {
-        config.headers['X-PrivateTenant'] = organizationId;
+    const organizationName = localStorage.getItem('organizationname');
+    if (organizationName) {
+        config.headers['X-PrivateTenant'] = organizationName;
     }
     return config;
 }, (error) => {

@@ -5,15 +5,16 @@ import { login } from '../api/authService';
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [organizationname, setOrganizationname] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        const success = await login({ username, password });
+        const success = await login({ username, password, organizationname });
         if (success) {
             navigate('/kugel');
         }
-        console.log("Logged in with:", { username, password });
+        console.log("Logged in with:", { username, password, organizationname });
     };
 
     return (
@@ -31,6 +32,12 @@ const LoginPage: React.FC = () => {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                />
+                <input 
+                    type="text"
+                    placeholder='Organization Name'
+                    value={organizationname}
+                    onChange={(e) => setOrganizationname(e.target.value)}
                 />
                 <button type="submit">Login</button>
             </form>

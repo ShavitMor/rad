@@ -26,8 +26,8 @@ public class UserController {
             logger.warn("Email already exists: {}", createUserRequest.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-
-        User user = userService.createUser(createUserRequest.getOrganizationName(), createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
+        System.out.println("HEREEEE2" + createUserRequest.getOrganizationname());
+        User user = userService.createUser(createUserRequest.getOrganizationname(), createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
         logger.info("User created successfully with ID: {}", user.getId());
 
         return ResponseEntity.ok(user);
