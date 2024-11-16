@@ -51,3 +51,13 @@ try {
     throw error;
 }
 }
+
+export const removeSchemas = async (organization: string): Promise<any> => {
+try {
+    const response = await api.delete(`${API_URL}/${organization}}`);
+    return response.data;
+} catch (error: any) {
+    alert(error.response.data);
+    throw error;
+}
+}

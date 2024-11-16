@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,14 +37,23 @@ public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
+        // Fetch all orders
+        List<Order> orders = orderRepository.findAll();
 
+        // For each order, fetch associated order products
+        for (Order order : orders) {
+            List<OrderProduct> products = orderProductRepository.findByOrderId(order.getId());
+            order.setProducts(products); // Set the products for this order
+        }
+
+        return orders;
+    }
     public Order createOrder(Order order) {
         double totalPrice = 0.0;
 
         // Calculate total price and set price for each OrderProduct
         for (OrderProduct op : order.getProducts()) {
+            System.out.println("yo"+op);
             Product product = productRepository.findByName(op.getProductName())
                     .orElseThrow(() -> new InvalidProductInputException("Product not found"));
             op.setPrice(product.getPricePerKg() * op.getQuantityKg());
@@ -70,7 +80,6 @@ public class OrderService {
 
     public Order updateOrder(Long id, Order orderDetails) {
         return orderRepository.findById(id).map(order -> {
-            order.setUserId(orderDetails.getUserId());
             order.setProducts(orderDetails.getProducts());
             double totalPrice = 0.0;
             for (OrderProduct op : order.getProducts()) {
@@ -78,16 +87,21 @@ public class OrderService {
                         .orElseThrow(() -> new InvalidProductInputException("Product not found"));
                 op.setPrice(product.getPricePerKg() * op.getQuantityKg());
                 totalPrice += op.getPrice();
+                orderProductRepository.save(op);
+
             }
             order.setTotalPrice(totalPrice);
             return orderRepository.save(order);
         }).orElseThrow(() -> new InvalidOrderInputException("Order not found"));
     }
-
+    @Transactional
     public void deleteOrder(Long id) {
+        // First, delete all OrderProduct entries associated with the Order
+        orderProductRepository.deleteByOrderId(id);
+
+        // Then, delete the Order itself
         orderRepository.deleteById(id);
     }
-
     public void createSchemas(String organization) {
         String schemaName = sanitizeSchemaName(organization);
 
@@ -125,7 +139,7 @@ public class OrderService {
         CREATE TABLE %s.order_products (
             id SERIAL PRIMARY KEY,
             orderid BIGINT,
-            productname BIGINT,
+            productname TEXT,
             quantitykg DOUBLE PRECISION,
             price DOUBLE PRECISION
         )

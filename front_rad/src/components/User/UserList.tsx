@@ -14,17 +14,24 @@ const UserList: React.FC = () => {
         email: "",
         password: "",
     });
+    const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const getUsers = async () => {
-            try {
-                const usersData = await fetchUsers();
-                setUsers(usersData);
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-        getUsers();
+        // Assume you get the token from localStorage or some other method
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
+
+        if (storedToken) {
+            const getUsers = async () => {
+                try {
+                    const usersData = await fetchUsers();
+                    setUsers(usersData);
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                }
+            };
+            getUsers();
+        }
     }, []);
 
     const handleDelete = async (id: string) => {
@@ -70,6 +77,10 @@ const UserList: React.FC = () => {
         setEditingUserId(null);
         setEditFormData({ id: "",  organizationName:"", username: "", email: "", password: "" });
     };
+
+    if (!token) {
+        return <p>Please log in to view the user list.</p>;
+    }
 
     return (
         <div>

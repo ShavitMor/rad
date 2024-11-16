@@ -31,6 +31,7 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         logger.info("Retrieving all orders");
+        System.out.println(orderService.getAllOrders());
         return orderService.getAllOrders();
     }
 
