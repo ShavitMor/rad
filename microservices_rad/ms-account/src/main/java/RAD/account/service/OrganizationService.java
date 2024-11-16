@@ -127,16 +127,74 @@ public class OrganizationService {
     }
 
     public Organization updateOrganization(long id, Organization organizationDetails) {
-        Organization organization = organizationRepository.findById(id)
+        // Retrieve the existing organization
+        Organization existingOrganization = organizationRepository.findById(id)
                 .orElseThrow(() -> new InvalidOrganizationInputException("Organization not found"));
 
-        organization.setName(organizationDetails.getName());
-        organization.setAddress(organizationDetails.getAddress());
+        // Validate the new organization name
+        validateOrganization(organizationDetails);
 
-        return organizationRepository.save(organization);
+        // Sanitize the old and new schema names
+        String oldSchemaName = sanitizeSchemaName(existingOrganization.getName());
+        String newSchemaName = sanitizeSchemaName(organizationDetails.getName());
+
+        if (schemaExists(newSchemaName)) {
+            throw new InvalidOrganizationInputException(
+                    "An organization with the name '" + organizationDetails.getName() + "' already exists"
+            );
+        }
+
+        try {
+            // Rename the schema if the name has changed
+            if (!oldSchemaName.equals(newSchemaName)) {
+                renameSchema(oldSchemaName, newSchemaName);
+                log.info("Renamed schema from '{}' to '{}'", oldSchemaName, newSchemaName);
+            }
+
+            // Update the organization's name and other details
+            existingOrganization.setName(organizationDetails.getName());
+            existingOrganization.setAddress(organizationDetails.getAddress());
+            Organization updatedOrganization = organizationRepository.save(existingOrganization);
+
+            log.info("Updated organization with ID: {}", id);
+            return updatedOrganization;
+        } catch (DataAccessException e) {
+            log.error("Failed to update organization or rename schema: {}", e.getMessage());
+            throw new InvalidOrganizationInputException("Failed to update organization: " + organizationDetails.getName());
+        }
+    }
+
+    private void renameSchema(String oldSchemaName, String newSchemaName) {
+        String renameSchemaSQL = String.format("ALTER SCHEMA %s RENAME TO %s", oldSchemaName, newSchemaName);
+        jdbcTemplate.execute(renameSchemaSQL);
+        log.info("Renamed schema from '{}' to '{}'", oldSchemaName, newSchemaName);
     }
 
     public void deleteOrganization(long id) {
-        organizationRepository.deleteById(id);
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new InvalidOrganizationInputException("Organization not found"));
+
+        // Sanitize the schema name based on the organization's name
+        String schemaName = sanitizeSchemaName(organization.getName());
+
+        try {
+            // Drop the schema associated with the organization
+            deleteSchema(schemaName);
+            log.info("Deleted schema: {}", schemaName);
+
+            // Delete the organization record from the database
+            organizationRepository.deleteById(id);
+            log.info("Deleted organization with ID: {}", id);
+        } catch (DataAccessException e) {
+            log.error("Failed to delete schema for organization: {}", organization.getName());
+            throw new InvalidOrganizationInputException("Failed to delete schema for organization: " + organization.getName());
+        }
+    }
+
+    private void deleteSchema(String schemaName) {
+        // SQL to drop the schema and all its objects
+        String dropSchemaSQL = String.format("DROP SCHEMA IF EXISTS %s CASCADE", schemaName);
+        jdbcTemplate.execute(dropSchemaSQL);
+        log.info("Dropped schema: {}", schemaName);
     }
 }

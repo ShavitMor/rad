@@ -110,18 +110,6 @@ public class OrderService {
         jdbcTemplate.execute(createSchemaSQL);
         log.info("Created schema: {}", schemaName);
 
-        // Create products table
-        String createProductsTableSQL = String.format("""
-        CREATE TABLE %s.products (
-            id SERIAL PRIMARY KEY,
-            name TEXT,
-            description TEXT,
-            priceperkg DOUBLE PRECISION
-        )
-    """, schemaName);
-        jdbcTemplate.execute(createProductsTableSQL);
-        log.info("Created products table in schema: {}", schemaName);
-
         // Create orders table
         String createOrdersTableSQL = String.format("""
         CREATE TABLE %s.orders (
@@ -161,5 +149,49 @@ public class OrderService {
         }
 
         return sanitized;
+    }
+
+    public void deleteSchemas(String organization) {
+        // Sanitize the schema name
+        String schemaName = sanitizeSchemaName(organization);
+
+        // Drop order_products table
+        String dropOrderProductsTableSQL = String.format("DROP TABLE IF EXISTS %s.order_products CASCADE", schemaName);
+        jdbcTemplate.execute(dropOrderProductsTableSQL);
+        log.info("Dropped order_products table in schema: {}", schemaName);
+
+        // Drop orders table
+        String dropOrdersTableSQL = String.format("DROP TABLE IF EXISTS %s.orders CASCADE", schemaName);
+        jdbcTemplate.execute(dropOrdersTableSQL);
+        log.info("Dropped orders table in schema: {}", schemaName);
+
+        // Drop schema
+        String dropSchemaSQL = String.format("DROP SCHEMA IF EXISTS %s CASCADE", schemaName);
+        jdbcTemplate.execute(dropSchemaSQL);
+        log.info("Dropped schema: {}", schemaName);
+    }
+
+    public void renameSchemas(String organization, String newName) {
+        String oldSchemaName = sanitizeSchemaName(organization);
+        String newSchemaName = sanitizeSchemaName(newName);
+
+        if (oldSchemaName.equals(newSchemaName)) {
+            throw new InvalidOrderInputException("New name must be different from the old name");
+        }
+
+        // Check if schema with the new name already exists
+        String checkSchemaSQL = "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSchemaSQL, Integer.class, newSchemaName);
+        if (count != null && count > 0) {
+            throw new InvalidOrderInputException("Schema with the name '" + newSchemaName + "' already exists");
+        }
+
+        // Rename the schema
+        String renameSchemaSQL = String.format("ALTER SCHEMA %s RENAME TO %s", oldSchemaName, newSchemaName);
+        jdbcTemplate.execute(renameSchemaSQL);
+        log.info("Renamed schema from '{}' to '{}'", oldSchemaName, newSchemaName);
+
+        // Optionally, update any references to the schema in other tables if necessary
+        // For example, you might need to update any foreign keys referencing the old schema
     }
 }

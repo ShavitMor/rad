@@ -40,6 +40,7 @@ export const login = async (credentials: loginCredentials) => {
 
 export const register = async (credentials: registerCredentials): Promise<AuthResponse> => {
     try {
+        console.log(credentials.organizationname);
         const response = await api.post<AuthResponse>('/auth/register', credentials, {
             headers: {
                 'X-PrivateTenant': credentials.organizationname

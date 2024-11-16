@@ -42,7 +42,7 @@ export const createOrganization = async (organization: Omit<Organization, 'id'>)
 
 export const updateOrganization = async (id: string, organization: Omit<Organization, 'id'>): Promise<Organization> => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, organization, HEADERS);
+        const response = await axios.put(`${API_WITHOUT_HEADER}/${id}`, organization, HEADERS);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -52,9 +52,11 @@ export const updateOrganization = async (id: string, organization: Omit<Organiza
 
 export const deleteOrganization = async (id: string): Promise<void> => {
     try {
-        await axios.delete(`${API_URL}/${id}`, HEADERS);
+        await axios.delete(`${API_WITHOUT_HEADER}/${id}`, HEADERS);
     } catch (error: any) {
         alert(error.response.data);
         throw error;
     }
 };
+
+

@@ -72,4 +72,23 @@ public class OrderController {
         logger.info("Schemas created successfully for organization: {}", organization);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/schemas/{organization}")
+    public ResponseEntity<Void> deleteSchemas(@PathVariable String organization) {
+        logger.info("Deleting schemas for organization: {}", organization);
+        orderService.deleteSchemas(organization);
+        logger.info("Schemas deleted successfully for organization: {}", organization);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/schemas/{organization}")
+    public ResponseEntity<Void> renameSchemas(@PathVariable String organization, @RequestParam String newName) {
+        try {
+            orderService.renameSchemas(organization, newName);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Error renaming schemas for organization {}", organization, e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
