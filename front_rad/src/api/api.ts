@@ -18,4 +18,15 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// Add an interceptor to include the X-PrivateTenant header
+api.interceptors.request.use((config) => {
+    const organizationName = localStorage.getItem('organizationname');
+    if (organizationName) {
+        config.headers['X-PrivateTenant'] = organizationName;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
 export default api;

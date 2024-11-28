@@ -6,6 +6,7 @@ import {
     updateOrganization,
 } from '../../api/organizationService';
 import '../../styles/List.css';
+import { removeSchemas,renameSchemas } from '../../api/orderService';
 
 const OrganizationList: React.FC = () => {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -25,18 +26,21 @@ const OrganizationList: React.FC = () => {
         getOrganizations();
     }, []);
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string,name:string) => {
+        await removeSchemas(name);
         await deleteOrganization(id);
         setOrganizations(organizations.filter(org => org.id !== id));
     };
 
     const handleEdit = (organization: Organization) => {
+        console.log(organization);
         setEditingOrganizationId(organization.id || null);
         setEditFormData(organization);
     };
 
-    const handleUpdate = async (id: string) => {
+    const handleUpdate = async (id: string,name:string) => {
         try {
+            await renameSchemas(name,editFormData.name);
             const updatedOrganization = await updateOrganization(id, editFormData);
             setOrganizations(organizations.map(org =>
                 org.id === id ? updatedOrganization : org
@@ -101,13 +105,13 @@ const OrganizationList: React.FC = () => {
                                         onChange={handleEditChange}
                                     />
                                 </div>
-                                <button onClick={() => org.id && handleUpdate(org.id)}>Save</button>
+                                <button onClick={() => org.id && handleUpdate(org.id,org.name)}>Save</button>
                                 <button onClick={handleCancelEdit}>Cancel</button>
                             </div>
                         ) : (
                             <div>
                                 <button onClick={() => handleEdit(org)}>Edit</button>
-                                <button onClick={() => handleDelete(org.id!)}>Delete</button>
+                                <button onClick={() => handleDelete(org.id!,org.name!)}>Delete</button>
                             </div>
                         )}
                     </li>

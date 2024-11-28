@@ -19,6 +19,7 @@ const OrderList: React.FC = () => {
                 const data = await fetchOrders();
                 console.log(data)
                 setOrders(data);
+                console.log( orders);
             } catch (error) {
                 console.error('Error fetching orders:', error);
             }
@@ -93,7 +94,7 @@ const OrderList: React.FC = () => {
                                     <ul>
                                         {order.products.map((product, index) => (
                                             <li key={index} className="product-detail">
-                                                Product ID: {product.productId}, Quantity: {product.quantityKg} kg
+                                                Product Name: {product.productName}, Quantity: {product.quantityKg} kg
                                             </li>
                                         ))}
                                     </ul>
@@ -113,11 +114,11 @@ const OrderList: React.FC = () => {
                                     <h4>Products:</h4>
                                     {editFormData.products.map((product, index) => (
                                         <div key={index}>
-                                            <label>Product ID:</label>
+                                            <label>Product Name:</label>
                                             <input
                                                 type="text"
-                                                name="productId"
-                                                value={product.productId}
+                                                name="productName"
+                                                value={product.productName}
                                                 onChange={(e) => handleEditChange(e, index)}
                                             />
                                             <label>Quantity (kg):</label>

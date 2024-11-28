@@ -26,8 +26,8 @@ public class UserController {
             logger.warn("Email already exists: {}", createUserRequest.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-
-        User user = userService.createUser(createUserRequest.getOrganizationId(), createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
+        System.out.println("HEREEEE2" + createUserRequest.getOrganizationname());
+        User user = userService.createUser(createUserRequest.getOrganizationname(), createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword());
         logger.info("User created successfully with ID: {}", user.getId());
 
         return ResponseEntity.ok(user);
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         logger.info("Retrieving user with ID: {}", id);
         return userService.getUserById(id)
                 .map(user -> {
@@ -56,14 +56,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User userDetails) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         logger.info("Updating user with ID: {}", id);
         User updatedUser = userService.updateUser(id, userDetails);
         logger.info("User updated successfully with ID: {}", id);
         return ResponseEntity.ok(updatedUser);    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         logger.info("Deleting user with ID: {}", id);
         userService.deleteUser(id);
         logger.info("User deleted successfully with ID: {}", id);

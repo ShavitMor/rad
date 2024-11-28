@@ -1,22 +1,31 @@
 package RAD.store.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Document(collection = "orders")
+@Entity
+@Table(name = "orders")
 public class Order {
 
-    @Id
-    private String id;
+    @jakarta.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
     private String userId;
-    private List<OrderProduct> products;
+
     private double totalPrice;
+
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    // Assuming OrderProduct is a separate entity or will be handled differently
+    @Transient
+    private List<OrderProduct> products;
+
+
 
 }
 

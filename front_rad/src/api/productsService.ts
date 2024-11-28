@@ -1,11 +1,16 @@
-import api from './api';
+import axios from 'axios';
 import { Product } from '../components/Products/Product';
 
-const API_URL = "/products";
+const API_URL = "http://localhost:8080/products";
+const headers = {
+    headers: {
+        'X-PrivateTenant': 'public'
+    }
+};
 
 export const fetchProducts = async (): Promise<Product[]> => {
     try {
-        const response = await api.get(API_URL);
+        const response = await axios.get(API_URL, headers);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -15,7 +20,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
 
 export const createProduct = async (product: Product): Promise<Product> => {
     try {
-        const response = await api.post(API_URL, product);
+        const response = await axios.post(API_URL, product, headers);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -25,7 +30,7 @@ export const createProduct = async (product: Product): Promise<Product> => {
 
 export const updateProduct = async (id: number, product: Product): Promise<Product> => {
     try {
-        const response = await api.put(`${API_URL}/${id}`, product);
+        const response = await axios.put(`${API_URL}/${id}`, product, headers);
         return response.data;
     } catch (error: any) {
         alert(error.response.data);
@@ -35,7 +40,7 @@ export const updateProduct = async (id: number, product: Product): Promise<Produ
 
 export const deleteProduct = async (id: number): Promise<void> => {
     try {
-        await api.delete(`${API_URL}/${id}`);
+        await axios.delete(`${API_URL}/${id}`, headers);
     } catch (error: any) {
         alert(error.response.data);
         throw error;

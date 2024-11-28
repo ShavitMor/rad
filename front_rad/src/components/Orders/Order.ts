@@ -2,7 +2,7 @@ export interface Order {
     id?: string; // Optional for new orders
     userId: string; // ID of the user placing the order
     products: {
-        productId: string; // ID of the product
+        productName: string; // ID of the product
         quantityKg: number; // Quantity in kilograms
     }[];
     totalPrice?: number; // Optional, can be calculated based on product prices and quantities

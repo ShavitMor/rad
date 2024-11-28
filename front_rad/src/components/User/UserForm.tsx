@@ -10,7 +10,7 @@ interface UserFormProps {
 
 const UserForm: React.FC<UserFormProps> = ({ existingUser, onSave }) => {
     const [user, setUser] = useState<User>(
-        existingUser || { organizationId: "", username: "", email: "", password: "" }
+        existingUser || { organizationName: "", username: "", email: "", password: "" }
     );
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,8 +34,8 @@ const UserForm: React.FC<UserFormProps> = ({ existingUser, onSave }) => {
             <form className="form" onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    name="organizationId"
-                    value={user.organizationId}
+                    name="organizationName"
+                    value={user.organizationName}
                     onChange={handleChange}
                     placeholder="Organization ID"
                     required

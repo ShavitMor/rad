@@ -19,6 +19,8 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
+
+
     @PostMapping
     public Organization createOrganization(@RequestBody Organization organization) {
         logger.info("Creating new organization: {}", organization.getName());
@@ -34,7 +36,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Organization> getOrganizationById(@PathVariable String id) {
+    public ResponseEntity<Organization> getOrganizationById(@PathVariable long id) {
         logger.info("Retrieving organization with ID: {}", id);
         return organizationService.getOrganizationById(id)
                 .map(ResponseEntity::ok)
@@ -45,17 +47,21 @@ public class OrganizationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Organization> updateOrganization(@PathVariable String id, @RequestBody Organization organizationDetails) {
+    public ResponseEntity<Organization> updateOrganization(@PathVariable long id, @RequestBody Organization organizationDetails) {
         logger.info("Updating organization with ID: {}", id);
 
         return ResponseEntity.ok(organizationService.updateOrganization(id, organizationDetails));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrganization(@PathVariable String id) {
+    public ResponseEntity<Void> deleteOrganization(@PathVariable long id) {
         logger.info("Deleting organization with ID: {}", id);
         organizationService.deleteOrganization(id);
         logger.info("Organization deleted successfully with ID: {}", id);
         return ResponseEntity.noContent().build();
     }
+
+
+
+
 }

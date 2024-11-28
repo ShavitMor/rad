@@ -23,15 +23,17 @@ public class UserService {
     private OrganizationRepository organizationRepository;
 
     @Transactional
-    public User createUser(String organizationId, String username, String email, String password) {
-        organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new InvalidOrganizationInputException("Organization not found"));
+    public User createUser(String organizationName, String username, String email, String password) {
+//        organizationRepository.findById(organizationId)
+//                .orElseThrow(() -> new InvalidOrganizationInputException("Organization not found"));
 
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
-        user.setOrganizationId(organizationId);
+        user.setOrganizationname(organizationName);
+        System.out.println("HEREEEE" + user.getOrganizationname());
+        System.out.println("hi");
 
         return userRepository.save(user);
     }
@@ -40,11 +42,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(String id) {
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    public User updateUser(String id, User userDetails) {
+    public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new InvalidUserInputException("User not found"));
 
@@ -55,7 +57,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 

@@ -23,11 +23,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Optional<Product> getProductById(String id) {
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    public Product updateProduct(String id, Product productDetails) {
+    public Product updateProduct(Long id, Product productDetails) {
         return productRepository.findById(id).map(product -> {
             product.setName(productDetails.getName());
             product.setDescription(productDetails.getDescription());
@@ -36,7 +36,7 @@ public class ProductService {
         }).orElseThrow(() -> new InvalidProductInputException("Product not found"));
     }
 
-    public void deleteProduct(String id) {
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
 }

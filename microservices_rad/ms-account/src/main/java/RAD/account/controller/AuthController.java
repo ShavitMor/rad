@@ -37,7 +37,7 @@ public class AuthController {
 
         final String jwt = tokenService.generateToken(user.getUsername());
         System.out.println(jwt);
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponse(jwt, user));
     }
 
     @PostMapping("/register")
@@ -47,7 +47,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
-        userService.createUser(request.getOrganizationId(), request.getUsername(), request.getEmail(), request.getPassword());
+        userService.createUser(request.getOrganizationname(), request.getUsername(), request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
 
     }

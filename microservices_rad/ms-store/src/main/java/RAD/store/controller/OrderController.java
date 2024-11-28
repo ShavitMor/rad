@@ -31,11 +31,12 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         logger.info("Retrieving all orders");
+        System.out.println(orderService.getAllOrders());
         return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable String id) {
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
         logger.info("Retrieving order with ID: {}", id);
         return orderService.getOrderById(id)
                 .map(order -> {
@@ -49,7 +50,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable String id, @RequestBody Order orderDetails) {
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order orderDetails) {
         logger.info("Updating order with ID: {}", id);
         Order updatedOrder = orderService.updateOrder(id, orderDetails);
         logger.info("Order updated successfully with ID: {}", id);
@@ -57,10 +58,37 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable String id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         logger.info("Deleting order with ID: {}", id);
         orderService.deleteOrder(id);
         logger.info("Order deleted successfully with ID: {}", id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{organization}")
+    public ResponseEntity<Void> createSchemas(@PathVariable String organization) {
+        logger.info("Creating schemas for organization: {}", organization);
+        orderService.createSchemas(organization);
+        logger.info("Schemas created successfully for organization: {}", organization);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/schemas/{organization}")
+    public ResponseEntity<Void> deleteSchemas(@PathVariable String organization) {
+        logger.info("Deleting schemas for organization: {}", organization);
+        orderService.deleteSchemas(organization);
+        logger.info("Schemas deleted successfully for organization: {}", organization);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/schemas/{organization}")
+    public ResponseEntity<Void> renameSchemas(@PathVariable String organization, @RequestParam String newName) {
+        try {
+            orderService.renameSchemas(organization, newName);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Error renaming schemas for organization {}", organization, e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

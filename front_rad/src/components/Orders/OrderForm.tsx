@@ -7,12 +7,12 @@ import { Product } from '../../components/Products/Product'; // Import the Produ
 
 interface OrderFormProps {
     onSave: () => void;
-    order?: { id: number; userId: string; products: { productId: string; quantityKg: number }[] };
+    order?: { id: number; userId: string; products: { productName: string; quantityKg: number,price:number }[] };
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
     const [username, setUsername] = useState<string | null>(null);
-    const [products, setProducts] = useState(order ? order.products : [{ productId: '', quantityKg: 0 }]);
+    const [products, setProducts] = useState(order ? order.products : [{ productName: '', quantityKg: 0,price:0 }]);
     const [error, setError] = useState<string | null>(null);
     const [fetchedProducts, setFetchedProducts] = useState<Product[]>([]);
 
@@ -30,6 +30,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
         const getProducts = async () => {
             try {
                 const productsData = await fetchProducts();
+                console.log(productsData)
                 setFetchedProducts(productsData);
             } catch (err) {
                 console.error("Failed to fetch products", err);
@@ -63,7 +64,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
     };
 
     const addProduct = () => {
-        setProducts([...products, { productId: '', quantityKg: 0 }]);
+        setProducts([...products, { productName: '', quantityKg: 0,price:0 }]);
     };
 
     return (
@@ -85,14 +86,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSave, order }) => {
                     <div key={index} className="product-input">
                         <label>Product</label>
                         <select 
-                            value={product.productId} 
-                            onChange={(e) => handleProductChange(index, 'productId', e.target.value)} 
+                            value={product.productName} 
+                            onChange={(e) => handleProductChange(index, 'productName', e.target.value)} 
                             className="form-input" 
                             required
                         >
                             <option value="" disabled>Select Product</option>
                             {fetchedProducts.map(prod => (
-                                <option key={prod.id} value={prod.id}>
+                                <option key={prod.id} value={prod.name}>
                                     {prod.name} {`(${prod.pricePerKg}$)`}
                                 </option>
                             ))}
