@@ -8,6 +8,31 @@ services:
     volumes:
       - ./mongo-data:/data/db
 
+  # PostgreSQL for Database 1
+  postgres-db1:
+    image: postgres:latest
+    container_name: postgres-rad_db-data
+    ports:
+      - "5432:5432"  # Maps host port 5434 to container's default port 5432
+    environment:
+      POSTGRES_DB: rad_db-data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./postgres-rad_db-data_new:/var/lib/postgresql/data
+
+  # PostgreSQL for Database 2
+  postgres-db2:
+    image: postgres:latest
+    container_name: postgres-rad_store_db-data_new
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: rad_store_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./postgres-rad_store_db-data_new:/var/lib/postgresql/data
 
   ## Eureka Server
   service-discovery:
@@ -65,11 +90,15 @@ services:
     pull_policy: always
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/accountdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db1:5432/rad_db-data
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     depends_on:
-        - mongo
-        - service-discovery
-        - api-gateway
+      - postgres-db1
+      - service-discovery
+      - api-gateway
 
   ms-store:
     container_name: ms-store
@@ -77,10 +106,13 @@ services:
     pull_policy: always
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/storedb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db2:5432/rad_store_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     depends_on:
-        - mongo
-        - service-discovery
-        - api-gateway
-
+      - postgres-db2
+      - service-discovery
+      - api-gateway
 
