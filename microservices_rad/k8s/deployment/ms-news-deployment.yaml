@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-news
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-news
+  template:
+    metadata:
+      labels:
+        app: ms-news
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: ms-news
+          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/rad:ms-news
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://mongo:27017/newsdb
+            - name: NEWSAPI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ms-secrets
+                  key: NEWSAPI_KEY
+          ports:
+            - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-news
+spec:
+  selector:
+    app: ms-news
+  ports:
+    - port: 8083
+      targetPort: 8083
+  type: ClusterIP
