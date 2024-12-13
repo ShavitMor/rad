@@ -12,7 +12,10 @@ target/
 *.iml
 *.ipr
 .env
+mongo-data
 
+postgres-rad_store_db-data_new
+postgres-rad_db-data_new
 
 ### Eclipse ###
 .apt_generated

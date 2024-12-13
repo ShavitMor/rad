@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db2
+  template:
+    metadata:
+      labels:
+        app: postgres-db2
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: rad_store_db
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: admin
+          # Using ephemeral storage (emptyDir)
+          volumeMounts:
+            - name: postgres-db2-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        # Use emptyDir for ephemeral storage
+        - name: postgres-db2-data
+          emptyDir: {}  # Ephemeral storage for data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db2
+spec:
+  selector:
+    app: postgres-db2
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP

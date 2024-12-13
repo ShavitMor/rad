@@ -3,7 +3,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-    baseURL: 'http://localhost:8080', // Replace with your backend URL
+    baseURL: 'http://aa547d65f2d104528955bbe360e40030-388049372.us-east-2.elb.amazonaws.com:8080', // Replace with your backend URL
 });
 
 // Add a request interceptor to attach the JWT token

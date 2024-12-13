@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Covid } from "./Covid";
-import { createCovidData, updateCovidData } from "../../api/covidService";
+import { createCovidData } from "../../api/covidService";
 import '../../styles/FormStyle.css'; // Import the CSS file
 
 interface CovidFormProps {

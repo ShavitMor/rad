@@ -1,9 +1,7 @@
-import api from './api';
 import { Organization } from '../components/Organization/Organization';
 import axios from 'axios';
 
-const API_URL = "/organizations";
-const API_WITHOUT_HEADER = "http://localhost:8080/organizations";
+const API_WITHOUT_HEADER = "http://aa547d65f2d104528955bbe360e40030-388049372.us-east-2.elb.amazonaws.com:8080/organizations";
 const HEADERS = {
     headers: {
         'X-PrivateTenant': 'public'

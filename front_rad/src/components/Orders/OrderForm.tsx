@@ -7,6 +7,8 @@ import { Product } from '../../components/Products/Product'; // Import the Produ
 
 interface OrderFormProps {
     onSave: () => void;
+        users: any[]; // or specify the correct type for users
+
     order?: { id: number; userId: string; products: { productName: string; quantityKg: number,price:number }[] };
 }
 
