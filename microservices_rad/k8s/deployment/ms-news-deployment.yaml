@@ -16,7 +16,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: ms-news
-          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/rad:ms-news
+          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/micro:ms-news
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/rad:ms_api_gateway
+          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/micro:ms_api_gateway
           ports:
             - containerPort: 8080
           env:

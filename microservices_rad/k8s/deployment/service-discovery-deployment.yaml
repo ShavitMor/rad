@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: service-discovery
-          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/rad:ms_service_discovery
+          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/micro:ms_service_discovery
           ports:
             - containerPort: 8761
           env:

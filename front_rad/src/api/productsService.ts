@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Product } from '../components/Products/Product';
 
-const API_URL = "http://localhost:8080/products";
+const API_URL = "http://aa547d65f2d104528955bbe360e40030-388049372.us-east-2.elb.amazonaws.com:8080/products";
 const headers = {
     headers: {
         'X-PrivateTenant': 'public'

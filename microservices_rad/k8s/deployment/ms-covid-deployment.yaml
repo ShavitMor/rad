@@ -16,7 +16,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: ms-covid
-          image: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/ms-covid:latest
+          image: 047719649687.dkr.ecr.us-east-2.amazonaws.com/micro:ms-covid
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker

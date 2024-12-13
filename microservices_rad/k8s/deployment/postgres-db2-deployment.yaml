@@ -24,9 +24,14 @@ spec:
               value: postgres
             - name: POSTGRES_PASSWORD
               value: admin
+          # Using ephemeral storage (emptyDir)
           volumeMounts:
             - name: postgres-db2-data
               mountPath: /var/lib/postgresql/data
+      volumes:
+        # Use emptyDir for ephemeral storage
+        - name: postgres-db2-data
+          emptyDir: {}  # Ephemeral storage for data
 ---
 apiVersion: v1
 kind: Service
@@ -39,14 +44,3 @@ spec:
     - port: 5432
       targetPort: 5432
   type: ClusterIP
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-db2-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
